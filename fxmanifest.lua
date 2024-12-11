@@ -9,7 +9,7 @@ description 'a basic script about fivem natives'
 version '1.0.1'
 
 client_scripts {
-    'client/*.lua'
+    'client/*.lua',
 }
 
 shared_scripts {
@@ -18,7 +18,7 @@ shared_scripts {
 }
 
 server_scripts {
-    'server/*.lua'
+    'server/*.lua',
 }
 
 dependencies {
