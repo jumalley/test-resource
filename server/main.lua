@@ -1,21 +1,20 @@
 local spawnedPeds = {}
 
-lib.callback.register('test-resource:server:CreatePed', function(source, pedType, modelHash, coords, isNetwork, bScriptHostPed)
-    local ped = CreatePed(pedType, modelHash, coords.x, coords.y, coords.z, coords.h, isNetwork, bScriptHostPed)
-    local netId = NetworkGetNetworkIdFromEntity(ped)
-    local pedData = {
-        model = modelHash,
-        coords = coords,
-        isNetwork = isNetwork,
-        ped = ped,
-        netId = netId
-    }
+CreatePed(model, coords)
 
-    table.insert(spawnedPeds, pedData)
+function CreatePed(model, coords)
+    local ped = CreatePed(1, model, coords.x, coords.y, coords.z, coords.h, true, false)
+
+    while not DoesEntityExist(ped) do Wait(0) end
+
+    local netId = NetworkGetNetworkIdFromEntity(ped)
+
+    table.insert(spawnedPeds, netId)
     print(json.encode(spawnedPeds))
 
-    return ped
-end)
+    return netId
+
+end
 
 AddEventHandler('onResourceStop', function(resourceName)
     if GetCurrentResourceName() == resourceName then
@@ -24,9 +23,10 @@ AddEventHandler('onResourceStop', function(resourceName)
 end)
 
 function DeleteSpawnedPeds()
-    for _, pedData in ipairs(spawnedPeds) do
-        if pedData.ped and DoesEntityExist(pedData.ped) then
-            DeleteEntity(pedData.ped)
+    for _, netId in ipairs(spawnedPeds) do
+        if netId and DoesEntityExist(netId) then
+            local ped = NetworkGetEntityFromNetworkId(netId)
+            DeleteEntity(ped)
         end
     end
     spawnedPeds = {}
