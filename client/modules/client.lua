@@ -11,3 +11,5 @@ local listOfPeds = {
 for _, ped in pairs (listOfPeds) do
     local spawnedPed = lib.callback.await('test-resource:server:CreatePed', false, pedType, ped.modelHash, ped.coords, isNetwork, bScriptHostPed)
 end
+
+local test = 'test'
